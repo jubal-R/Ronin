@@ -8,20 +8,6 @@ FileInfoTableWidget::FileInfoTableWidget()
     this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
-
-    QString stylesheet = "QWidget {"
-           " background-color: #333333;"
-           " color: #fffff8;"
-           "font-size: 10pt;"
-        "}"
-       "QHeaderView::section {"
-            "background-color: #e0e0e0;"
-            "color: #4c4c4c;"
-            "font-weight: bold;"
-            "padding: 4px;"
-            "border: 1px solid #c0c0c0;"
-        "}";
-    setStyleSheet(stylesheet);
 }
 
 void FileInfoTableWidget::insertInfo(QVector<QStringList> fileData){
@@ -42,4 +28,17 @@ void FileInfoTableWidget::insertInfo(QVector<QStringList> fileData){
     }
 
     this->resizeColumnsToContents();
+}
+
+void FileInfoTableWidget::styleTable(QString foregroundColor, QString backgroundColor, QString backgroundColor3){
+    QString stylesheet = "QWidget {"
+           "background-color: " + backgroundColor + ";"
+           "color: " + foregroundColor + ";"
+           "font-size: 10pt;"
+        "}"
+        "QTableWidget::item:selected {"
+            "background-color: " + backgroundColor3 + ";"
+            "color: " + foregroundColor + ";"
+        "}";
+    setStyleSheet(stylesheet);
 }

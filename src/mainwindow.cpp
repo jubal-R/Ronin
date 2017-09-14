@@ -18,8 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    relocationsTable = new RelocationsTable;
-    ui->infoTabWidget->addTab(relocationsTable, "Relocations");
+    relocationsTableWidget = new RelocationsTable;
+    ui->infoTabWidget->addTab(relocationsTableWidget, "Relocations");
     symbolsTableWidget = new SymbolsTableWidget;
     ui->infoTabWidget->addTab(symbolsTableWidget, "Symbols");
     importsTableWidget = new ImportsTableWidget;
@@ -187,7 +187,7 @@ void MainWindow::loadBinary(QString file){
             progress.setValue(3);
 
             setUpdatesEnabled(false);
-            relocationsTable->insertRelocations(disassemblyCore.getRelocations());
+            relocationsTableWidget->insertRelocations(disassemblyCore.getRelocations());
             symbolsTableWidget->insertSymbols(disassemblyCore.getSymbols());
             fileInfoTableWidget->insertInfo(disassemblyCore.getFileInfo());
             importsTableWidget->insertImports(disassemblyCore.getImports());
@@ -675,6 +675,7 @@ void MainWindow::setMainStyle(QString backgroundColor, QString backgroundColor3)
                         "background-color: " + backgroundColor + ";"
                         "border: 1px solid " + backgroundColor3 + ";"
                         "border-radius: 5px;"
+                        "min-height: 25px;"
                      "}"
                      "QScrollBar::add-line:vertical,QScrollBar::add-line:horizontal {"
                           "background: qlineargradient(x1:0, y1:0, x2:1, y2:0,"
@@ -703,13 +704,15 @@ void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundCo
                 "color: " + addressColor + ";"
             "}"
             "QTabBar::tab:selected{"
-                "color: #fafafa;"
-                "background-color: #3ba1a1;"
+                "color: #3ba1a1;"
+                "border-bottom:2px solid #3ba1a1;"
                 "border-top: 1px solid #d4d4d4;"
             "}"
             "QTabBar::tab {"
                 "background-color: " + backgroundColor2 +";"
+                "border-bottom:2px solid " + backgroundColor2 +";"
                 "min-width: 102px;"
+                "height: 30px;"
             "}"
             "QTabWidget::tab-bar {"
                 "left: 5px;"
@@ -742,10 +745,17 @@ void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundCo
 
 }
 
-void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor){
+void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString backgroundColor3){
     QString style = "#relocationsTab, #stringsTab, #infoTab, #importsTab {"
                 "background-color: " + backgroundColor + ";"
                 "color: " + foregroundColor + ";"
+             "}"
+             "QTabBar::tab:selected{"
+                "border-bottom:2px solid #3ba1a1;"
+             "}"
+             "QTabBar::tab {"
+                 "background-color: " + backgroundColor2 +";"
+                 "min-width: 70px;"
              "}"
              "QTabWidget::pane {"
                 "border: 1px solid #c0c0c0;"
@@ -774,10 +784,23 @@ void MainWindow::setInfoTabWidgetStyle(QString foregroundColor, QString backgrou
                 "background: "+ backgroundColor +";"
              "}";
     ui->infoTabWidget->setStyleSheet(style);
+    fileInfoTableWidget->styleTable(foregroundColor, backgroundColor, backgroundColor3);
+    importsTableWidget->styleTable(foregroundColor, backgroundColor, backgroundColor3);
+    relocationsTableWidget->styleTable(foregroundColor, backgroundColor, backgroundColor3);
+    symbolsTableWidget->styleTable(foregroundColor, backgroundColor, backgroundColor3);
 }
 
-void MainWindow::setSidebarStyle(QString foregroundColor, QString backgroundColor){
-    QString sidebarStyle = "#functionList {background-color: " + backgroundColor + "; color: " + foregroundColor + "; font-size: 10pt; border: 1px solid #c0c0c0;}";
+void MainWindow::setSidebarStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor3){
+    QString sidebarStyle = "#functionList {"
+                                "background-color: " + backgroundColor + ";"
+                                "color: " + foregroundColor + ";"
+                                "font-size: 10pt;"
+                                "border: 1px solid #c0c0c0;"
+                            "}"
+                            "#functionList::item:selected {"
+                                "background-color: " + backgroundColor3 + ";"
+                                "color: " + foregroundColor + ";"
+                            "}";
     ui->sidebar_2->setStyleSheet(sidebarStyle);
 }
 
@@ -787,7 +810,7 @@ void MainWindow::on_actionDefault_triggered()
     settings.setValue("theme", "default");
 
     QString fgc = "#4c4c4c";
-    QString bgc = "#f6f6f6";
+    QString bgc = "#e6e6e6";
     QString fgc2 = "#4c4c4c";
     QString bgc2 = "#e0e0e0";
     QString addrc = "#268BD2";
@@ -796,8 +819,8 @@ void MainWindow::on_actionDefault_triggered()
     setCentralWidgetStyle(fgc2, bgc2);
     setMainStyle(bgc, bgc3);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc);
-    setSidebarStyle(fgc, bgc);
+    setInfoTabWidgetStyle(fgc, bgc, bgc2, bgc3);
+    setSidebarStyle(fgc, bgc, bgc3);
 
     disHighlighter->setTheme("Default");
 
@@ -820,8 +843,8 @@ void MainWindow::on_actionDark_triggered()
     setCentralWidgetStyle(fgc2, bgc2);
     setMainStyle(bgc, bgc3);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc);
-    setSidebarStyle(fgc, bgc);
+    setInfoTabWidgetStyle(fgc, bgc, bgc2, bgc3);
+    setSidebarStyle(fgc, bgc, bgc3);
 
     disHighlighter->setTheme("Default");
 
@@ -844,8 +867,8 @@ void MainWindow::on_actionSolarized_triggered()
     setCentralWidgetStyle(fgc2, bgc2);
     setMainStyle(bgc, bgc3);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc);
-    setSidebarStyle(fgc, bgc);
+    setInfoTabWidgetStyle(fgc, bgc, bgc2, bgc3);
+    setSidebarStyle(fgc, bgc, bgc3);
 
     disHighlighter->setTheme("solarized");
 
@@ -863,13 +886,13 @@ void MainWindow::on_actionSolarized_Dark_triggered()
     QString fgc2 = "#4c4c4c";
     QString bgc2 = "#e0e0e0";
     QString addrc = "#268BD2";
-    QString bgc3 = "#073638";
+    QString bgc3 = "#073642";
 
     setCentralWidgetStyle(fgc2, bgc2);
     setMainStyle(bgc, bgc3);
     setTabWidgetStyle(fgc, bgc, bgc2, addrc);
-    setInfoTabWidgetStyle(fgc, bgc);
-    setSidebarStyle(fgc, bgc);
+    setInfoTabWidgetStyle(fgc, bgc, bgc2, bgc3);
+    setSidebarStyle(fgc, bgc, bgc3);
 
     disHighlighter->setTheme("solarized");
 
@@ -883,24 +906,13 @@ void MainWindow::on_actionSolarized_Dark_triggered()
 
 void MainWindow::on_actionProject_triggered()
 {
-    QString aboutStr = "Ronin is a \n\n"
-                       "Project Page: https://github.com/\n\n"
+    QString aboutStr = "Ronin - GUI frontend to radare2 reverse engineering framework.\n\n"
+                       "Project Page: https://github.com/jubal-r/ronin\n\n"
 
-                       "Copyright (C) 2017\n\n"
+                       "Copyright (C) 2017\n"
 
-                       "This program is free software: you can redistribute it and/or modify "
-                       "it under the terms of the GNU General Public License as published by "
-                       "the Free Software Foundation, either version 3 of the License, or "
-                       "(at your option) any later version.\n\n"
-
-                       "This program is distributed in the hope that it will be useful,"
-                       "but WITHOUT ANY WARRANTY; without even the implied warranty of "
-                       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
-                       "GNU General Public License for more details.\n\n"
-
-                       "You should have received a copy of the GNU General Public License "
-                       "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n";
-    QMessageBox::information(this, tr("About R2Test"), aboutStr,QMessageBox::Close);
+                       "License: GNU Lesser General Public License(LGPL) Version 3\n";
+    QMessageBox::information(this, tr("About Ronin"), aboutStr,QMessageBox::Close);
 }
 
 void MainWindow::on_actionExit_triggered()

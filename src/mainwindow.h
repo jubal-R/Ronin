@@ -60,9 +60,9 @@ private slots:
 
     void setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor);
 
-    void setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor);
+    void setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString backgroundColor3);
 
-    void setSidebarStyle(QString foregroundColor, QString backgroundColor);
+    void setSidebarStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor3);
 
     void on_actionProject_triggered();
 
@@ -119,7 +119,7 @@ private:
     QSettings settings;
 
     SymbolsTableWidget *symbolsTableWidget;
-    RelocationsTable *relocationsTable;
+    RelocationsTable *relocationsTableWidget;
     ImportsTableWidget *importsTableWidget;
     FileInfoTableWidget *fileInfoTableWidget;
 

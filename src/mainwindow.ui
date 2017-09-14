@@ -188,7 +188,7 @@ font-size: 11pt;</string>
              <property name="minimumSize">
               <size>
                <width>0</width>
-               <height>31</height>
+               <height>32</height>
               </size>
              </property>
              <property name="font">
@@ -241,13 +241,19 @@ font-size: 11pt;</string>
               <font>
                <family>Sans Serif</family>
                <pointsize>10</pointsize>
-               <weight>50</weight>
+               <weight>75</weight>
                <italic>false</italic>
-               <bold>false</bold>
+               <bold>true</bold>
               </font>
              </property>
              <property name="styleSheet">
               <string notr="true"/>
+             </property>
+             <property name="textElideMode">
+              <enum>Qt::ElideLeft</enum>
+             </property>
+             <property name="spacing">
+              <number>0</number>
              </property>
              <property name="viewMode">
               <enum>QListView::ListMode</enum>
@@ -323,6 +329,12 @@ font-size: 11pt;</string>
              <property name="currentIndex">
               <number>0</number>
              </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
              <property name="movable">
               <bool>false</bool>
              </property>
@@ -331,6 +343,10 @@ font-size: 11pt;</string>
                <string notr="true">border: none;
 </string>
               </property>
+              <attribute name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/icons/ic_low_priority_black_24px.svg</normaloff>:/icons/ic_low_priority_black_24px.svg</iconset>
+              </attribute>
               <attribute name="title">
                <string>Disassembly</string>
               </attribute>
@@ -482,6 +498,10 @@ font-size: 11pt;</string>
               </layout>
              </widget>
              <widget class="QWidget" name="pseudoTab">
+              <attribute name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/icons/ic_code_black_24px.svg</normaloff>:/icons/ic_code_black_24px.svg</iconset>
+              </attribute>
               <attribute name="title">
                <string>Puseudo Code</string>
               </attribute>
@@ -523,6 +543,10 @@ font-size: 11pt;</string>
               <property name="styleSheet">
                <string notr="true">border: none;</string>
               </property>
+              <attribute name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/icons/ic_view_array_black_24px.svg</normaloff>:/icons/ic_view_array_black_24px.svg</iconset>
+              </attribute>
               <attribute name="title">
                <string>Hex Dump</string>
               </attribute>
@@ -708,7 +732,7 @@ color: rgb(85, 85, 85);</string>
          <widget class="QWidget" name="Infowidget" native="true">
           <property name="minimumSize">
            <size>
-            <width>360</width>
+            <width>385</width>
             <height>0</height>
            </size>
           </property>

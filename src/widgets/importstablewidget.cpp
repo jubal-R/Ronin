@@ -10,20 +10,6 @@ ImportsTableWidget::ImportsTableWidget()
 
     this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     this->verticalHeader()->hide();
-
-    QString stylesheet = "QWidget {"
-           "background-color: #333333;"
-           "color: #fffff8;"
-           "font-size: 10pt;"
-        "}"
-       "QHeaderView::section {"
-            "background-color: #333333;"
-            "color: #fffff8;"
-            "font-weight: bold;"
-            "padding: 4px;"
-            "border: 1px solid #2d2d2d;"
-        "}";
-    setStyleSheet(stylesheet);
 }
 
 void ImportsTableWidget::insertImports(QVector<QStringList> importsData){
@@ -52,4 +38,24 @@ void ImportsTableWidget::insertImports(QVector<QStringList> importsData){
     }
 
     this->resizeColumnsToContents();
+}
+
+void ImportsTableWidget::styleTable(QString foregroundColor, QString backgroundColor, QString backgroundColor3){
+    QString stylesheet = "QWidget {"
+           "background-color: " + backgroundColor + ";"
+           "color: " + foregroundColor + ";"
+           "font-size: 10pt;"
+        "}"
+        "QTableWidget::item:selected {"
+            "background-color: " + backgroundColor3 + ";"
+            "color: " + foregroundColor + ";"
+        "}"
+        "QHeaderView::section {"
+            "background-color: " + backgroundColor + ";"
+            "color: " + foregroundColor + ";"
+            "font-weight: bold;"
+            "padding: 4px;"
+            "border: none;"
+        "}";
+    setStyleSheet(stylesheet);
 }

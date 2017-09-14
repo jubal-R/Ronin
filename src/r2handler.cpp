@@ -12,12 +12,13 @@ void R2Handler::startR2(QString file){
         r2->close();
     r2 = new R2PipeAPI(file + " -B " + baseAddress);
     setConfig();
-    aaa();
+    aa();
 }
 
 void R2Handler::setConfig(){
     r2->cmd("e scr.color=0");
     r2->cmd("e scr.utf8=1");
+    r2->cmd("e asm.flags=0");
     r2->cmd("e asm.fcnlines=0");
     r2->cmd("e asm.functions=0");
     r2->cmd("e asm.section=0");
@@ -193,7 +194,7 @@ QVector< QVector<QString> > R2Handler::iz(){
         QByteArray strVal = QByteArray::fromBase64(jsonObj["string"].toString().toLocal8Bit());
 
         QVector<QString> string(2);
-        string[0] = vaddr;
+        string[0] = "0x" + vaddr;
         string[1] = strVal;
         stringsData.append(string);
     }
@@ -256,8 +257,6 @@ QString R2Handler::getBaseAddress(QString file){
     QJsonObject Obj = doc.object();
     QJsonArray array = Obj["entries"].toArray();
     QJsonObject entriesObj = array.at(0).toObject();
-
-    qDebug() << entriesObj;
 
     QString baseAddress = "0x" + QString::number(entriesObj["baddr"].toVariant().toLongLong(), 16);
 

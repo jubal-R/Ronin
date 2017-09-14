@@ -9,6 +9,7 @@ class RelocationsTable : public QTableWidget
 public:
     RelocationsTable();
     void insertRelocations(QVector<QStringList> relocationData);
+    void styleTable(QString foregroundColor, QString backgroundColor, QString backgroundColor3);
 };
 
 #endif // RELOCATIONSTABLE_H
