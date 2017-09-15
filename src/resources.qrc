@@ -11,5 +11,6 @@
         <file>icons/ic_code_black_24px.svg</file>
         <file>icons/ic_view_array_black_24px.svg</file>
         <file>icons/ic_low_priority_black_24px.svg</file>
+        <file>icons/ic_assessment_black_24px.svg</file>
     </qresource>
 </RCC>

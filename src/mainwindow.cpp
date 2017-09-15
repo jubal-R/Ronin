@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->codeBrowser->setFont(mono);
     ui->pseudoCodeBrowser->setFont(mono);
+    ui->graphBrowser->setFont(mono);
     ui->hexBrowser->setFont(mono);
     ui->functionAddressValueLabel->setFont(mono);
 
@@ -95,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Style
     disHighlighter = new DisassemblyHighlighter(ui->codeBrowser->document(), "Default");
+    graphHighlighter = new DisassemblyHighlighter(ui->graphBrowser->document(), "Default");
     pseudoHighlighter = new PseudoCodeHighlighter(ui->pseudoCodeBrowser->document(), "Default");
 
     QString theme = settings.value("theme", "default").toString();
@@ -169,7 +171,7 @@ void MainWindow::loadBinary(QString file){
 
             if (!disassemblyCore.disassemblyIsLoaded()){
                 ui->codeBrowser->setPlainText("File format not recognized.");
-                ui->functionAddressLabel->setText("");
+                ui->functionAddressValueLabel->setText("");
                 ui->functionLabel->setText("");
             } else {
                 // If all good, display disassembly data
@@ -218,8 +220,6 @@ void MainWindow::on_actionOpen_triggered()
         files.setCurrentDirectory(file);
 
         loadBinary(file);
-        ui->disTabWidget->setCurrentIndex(0);
-        ui->codeBrowser->setFocus();
     }
 
 }
@@ -236,6 +236,7 @@ void MainWindow::displayFunctionText(QString functionName){
         ui->functionAddressValueLabel->setText(disassemblyCore.getFunctionAddress(functionName));
         ui->codeBrowser->setPlainText(disassemblyCore.getFunctionDisassembly(functionName));
         ui->pseudoCodeBrowser->setPlainText(disassemblyCore.getPseudoCode(functionName));
+        ui->graphBrowser->setPlainText(disassemblyCore.getFunctionGraph(functionName));
         setUpdatesEnabled(true);
 
     }
@@ -710,7 +711,7 @@ void MainWindow::setMainStyle(QString backgroundColor, QString backgroundColor3)
 
 // Style tab widget
 void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor){
-    QString style = "#disTab, #hexTab, #pseudoTab {"
+    QString style = "#disTab, #hexTab, #pseudoTab, #graphTab {"
                 "background-color: " + backgroundColor + ";"
                 "color: " + foregroundColor + ";"
             "}"

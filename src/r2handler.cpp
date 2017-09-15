@@ -236,6 +236,11 @@ QString R2Handler::pdc(QString functionName){
     return pseudoCode;
 }
 
+QString R2Handler::agf(QString functionName){
+    QString asciiGraph = r2->cmd("agf @" + functionName);
+    return asciiGraph;
+}
+
 QString R2Handler::px(QString args){
     QString hexdump = r2->cmd("px " + args);
     return hexdump;

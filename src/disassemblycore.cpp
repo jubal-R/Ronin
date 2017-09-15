@@ -109,6 +109,21 @@ QString DisassemblyCore::getPseudoCode(QString name){
     return r2h.pdc(name);
 }
 
+QString DisassemblyCore::getFunctionGraph(QString name){
+    QString asciiGraph = r2h.agf(name);
+
+    // Remove uneccessary first line
+    int len = asciiGraph.length();
+    int index = 0;
+    while (index < len && asciiGraph.at(index) != QChar('\n')){
+        index++;
+    }
+
+    asciiGraph = asciiGraph.mid(index);
+
+    return asciiGraph;
+}
+
 QString DisassemblyCore::getHexDump(){
     return r2h.px("$s @0");
 }

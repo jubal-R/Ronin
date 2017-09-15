@@ -64,7 +64,7 @@ void DisassemblyHighlighter::setupHighlighter(QString theme){
 
     //Comments
     commentFormat.setForeground(commentColor);
-    rule.pattern = QRegExp(";\\s[^\n]*");
+    rule.pattern = QRegExp(";\\s[^\n│]*");
     rule.format = commentFormat;
     highlightingRules.append(rule);
 

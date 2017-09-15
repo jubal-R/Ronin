@@ -24,6 +24,7 @@ public:
     QString getFunctionAddress(QString name);
     QString getFunctionDisassembly(QString name);
     QString getPseudoCode(QString name);
+    QString getFunctionGraph(QString name);
 
     QString getHexDump();
     QString getPaddr(QString vaddr);

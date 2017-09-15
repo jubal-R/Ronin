@@ -604,6 +604,45 @@ font-size: 11pt;</string>
                </item>
               </layout>
              </widget>
+             <widget class="QWidget" name="graphTab">
+              <attribute name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/icons/ic_assessment_black_24px.svg</normaloff>:/icons/ic_assessment_black_24px.svg</iconset>
+              </attribute>
+              <attribute name="title">
+               <string>Graph View</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_4">
+               <property name="leftMargin">
+                <number>5</number>
+               </property>
+               <property name="topMargin">
+                <number>5</number>
+               </property>
+               <property name="rightMargin">
+                <number>1</number>
+               </property>
+               <property name="bottomMargin">
+                <number>1</number>
+               </property>
+               <property name="spacing">
+                <number>1</number>
+               </property>
+               <item row="0" column="0">
+                <widget class="QPlainTextEdit" name="graphBrowser">
+                 <property name="undoRedoEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="lineWrapMode">
+                  <enum>QPlainTextEdit::NoWrap</enum>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
              <widget class="QWidget" name="pseudoTab">
               <attribute name="icon">
                <iconset resource="resources.qrc">

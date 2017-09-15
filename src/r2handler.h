@@ -20,6 +20,7 @@ public:
     QVector< QVector<QString> > afl();
     QString pdf(QString functionName);
     QString pdc(QString functionName);
+    QString agf(QString functionName);
     QString px(QString args);
     QString paddr(QString vaddr);
 private:

@@ -49,3 +49,5 @@ LIBS += -L/usr/local/radare2/lib -lr_core -lr_util
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES +=

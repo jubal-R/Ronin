@@ -125,6 +125,7 @@ private:
     FileInfoTableWidget *fileInfoTableWidget;
 
     DisassemblyHighlighter *disHighlighter;
+    DisassemblyHighlighter *graphHighlighter;
     PseudoCodeHighlighter *pseudoHighlighter;
 
     int currentFunctionIndex;
