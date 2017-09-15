@@ -21,10 +21,12 @@ public:
     QString pdf(QString functionName);
     QString pdc(QString functionName);
     QString px(QString args);
+    QString paddr(QString vaddr);
 private:
     R2PipeAPI *r2;
     QJsonArray strToJsonArray(QString json);
     QString getBaseAddress(QString file);
+    QString sanitizeInput(QString input);
 };
 
 #endif // R2HANDLER_H

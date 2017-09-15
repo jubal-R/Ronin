@@ -231,9 +231,23 @@ QString R2Handler::px(QString args){
     return hexdump;
 }
 
+QString R2Handler::paddr(QString vaddr){
+    vaddr = sanitizeInput(vaddr);
+    QString paddr = r2->cmd("?p " + vaddr);
+    return paddr;
+}
+
 QJsonArray R2Handler::strToJsonArray(QString json){
     QJsonDocument doc = QJsonDocument::fromJson(json.toLocal8Bit());
     return doc.array();
+}
+
+QString R2Handler::sanitizeInput(QString input){
+    input = input.replace("!", "");
+    input = input.replace("|", "");
+    input = input.replace(";", "");
+    input = input.replace("@", "");
+    return input;
 }
 
 QString R2Handler::getBaseAddress(QString file){

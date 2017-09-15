@@ -228,10 +228,7 @@ void MainWindow::on_actionOpen_triggered()
 void MainWindow::displayFunctionText(QString functionName){
     if (disassemblyCore.disassemblyIsLoaded()){
         setUpdatesEnabled(false);
-//        ui->addressValueLabel->setText(function.getAddress());
-//        ui->fileOffsetValueLabel->setText(function.getFileOffset());
         ui->functionLabel->setText(functionName);
-//        ui->sectionValueLabel->setText(function.getSection());
         ui->codeBrowser->setPlainText(disassemblyCore.getFunctionDisassembly(functionName));
         ui->pseudoCodeBrowser->setPlainText(disassemblyCore.getPseudoCode(functionName));
         setUpdatesEnabled(true);
@@ -244,13 +241,6 @@ void MainWindow::displayFunctionData(){
     if (disassemblyCore.disassemblyIsLoaded()){
         // Populate function list in sidebar
         ui->functionList->addItems(disassemblyCore.getFunctionNames());
-
-        // Display main function by default if it exists
-//        if (disassemblyCore.functionExists("main"))
-//            displayFunctionText("main");
-//        else {
-
-//        }
 
     }
 }
@@ -298,7 +288,6 @@ void MainWindow::enableMenuItems(){
     ui->actionGo_To_Address->setEnabled(true);
     ui->actionGo_to_Address_at_Cursor->setEnabled(true);
     ui->actionGet_Offset->setEnabled(true);
-    ui->actionGet_File_Offset_of_Current_Line->setEnabled(true);
     ui->actionFind_References->setEnabled(true);
     ui->actionFind_Calls_to_Current_Function->setEnabled(true);
     ui->actionFind_Calls_to_Current_Location->setEnabled(true);
@@ -349,13 +338,21 @@ void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 // Get file offset of current line of disassembly
 void MainWindow::on_actionGet_Offset_triggered()
 {
+    bool ok;
+    QString virtualAddress = QInputDialog::getText(this, tr("Get File Offset"),tr("Get file offset of address or function"), QLineEdit::Normal,"", &ok).trimmed();
+    if (ok && !virtualAddress.isEmpty()){
+        QString paddr = disassemblyCore.getPaddr(virtualAddress);
 
-}
+        if(paddr != "0xffffffffffffffff\n"){
+            QString offsetMsg = "File offset of address " + virtualAddress + "\npaddr: " + paddr;
+            QMessageBox::information(this, tr("File Offset"), offsetMsg,QMessageBox::Close);
+        } else {
+            QMessageBox::warning(this, tr("File Offset"), "Invalid address.",QMessageBox::Close);
+        }
 
-// Get Offset of Current Line triggered
-void MainWindow::on_actionGet_File_Offset_of_Current_Line_triggered()
-{
-
+    } else {
+        QMessageBox::warning(this, tr("File Offset"), "No address entered.",QMessageBox::Close);
+    }
 }
 
 

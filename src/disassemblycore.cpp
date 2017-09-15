@@ -77,3 +77,7 @@ QString DisassemblyCore::getPseudoCode(QString name){
 QString DisassemblyCore::getHexDump(){
     return r2h.px("$s @0");
 }
+
+QString DisassemblyCore::getPaddr(QString vaddr){
+    return r2h.paddr(vaddr);
+}

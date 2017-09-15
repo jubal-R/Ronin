@@ -100,8 +100,6 @@ private slots:
 
     void on_actionFind_References_triggered();
 
-    void on_actionGet_File_Offset_of_Current_Line_triggered();
-
     void on_actionDefault_triggered();
 
     void on_actionSolarized_Dark_triggered();

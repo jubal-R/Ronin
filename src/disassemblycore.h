@@ -22,8 +22,7 @@ public:
     QString getPseudoCode(QString name);
 
     QString getHexDump();
-
-    bool functionExists(QString name);
+    QString getPaddr(QString vaddr);
 
 private:
     R2Handler r2h;
