@@ -503,7 +503,7 @@ font-size: 11pt;</string>
                 <normaloff>:/icons/ic_code_black_24px.svg</normaloff>:/icons/ic_code_black_24px.svg</iconset>
               </attribute>
               <attribute name="title">
-               <string>Puseudo Code</string>
+               <string>Pseudo Code</string>
               </attribute>
               <layout class="QGridLayout" name="gridLayout_3">
                <property name="leftMargin">

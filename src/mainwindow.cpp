@@ -95,6 +95,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Style
     disHighlighter = new DisassemblyHighlighter(ui->codeBrowser->document(), "Default");
+    pseudoHighlighter = new PseudoCodeHighlighter(ui->pseudoCodeBrowser->document(), "Default");
 
     QString theme = settings.value("theme", "default").toString();
 
@@ -275,6 +276,7 @@ void MainWindow::clearUi(){
     ui->functionAddressValueLabel->clear();
     ui->functionLabel->clear();
     ui->codeBrowser->clear();
+    ui->pseudoCodeBrowser->clear();
     ui->hexBrowser->clear();
     ui->fileFormatlabel->clear();
     ui->stringsAddressBrowser->clear();
@@ -820,6 +822,7 @@ void MainWindow::on_actionDefault_triggered()
     setSidebarStyle(fgc, bgc, bgc3);
 
     disHighlighter->setTheme("Default");
+    pseudoHighlighter->setTheme("Default");
 
     lineColor = QColor(215,215,215);
     highlightCurrentLine();
@@ -844,6 +847,7 @@ void MainWindow::on_actionDark_triggered()
     setSidebarStyle(fgc, bgc, bgc3);
 
     disHighlighter->setTheme("Default");
+    pseudoHighlighter->setTheme("Default");
 
     lineColor = QColor(65,65,65);
     highlightCurrentLine();
@@ -868,6 +872,7 @@ void MainWindow::on_actionSolarized_triggered()
     setSidebarStyle(fgc, bgc, bgc3);
 
     disHighlighter->setTheme("solarized");
+    pseudoHighlighter->setTheme("solarized");
 
     lineColor = QColor(238, 232, 213);
     highlightCurrentLine();
@@ -892,6 +897,7 @@ void MainWindow::on_actionSolarized_Dark_triggered()
     setSidebarStyle(fgc, bgc, bgc3);
 
     disHighlighter->setTheme("solarized");
+    pseudoHighlighter->setTheme("solarized");
 
     lineColor = QColor(7, 54, 66);
     highlightCurrentLine();

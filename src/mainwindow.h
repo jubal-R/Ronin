@@ -9,6 +9,7 @@
 #include "disassemblycore.h"
 #include "files.h"
 #include "highlighters/disassemblyhighlighter.h"
+#include "highlighters/pseudocodehighlighter.h"
 
 #include "widgets/symbolstablewidget.h"
 #include "widgets/relocationstable.h"
@@ -122,6 +123,7 @@ private:
     FileInfoTableWidget *fileInfoTableWidget;
 
     DisassemblyHighlighter *disHighlighter;
+    PseudoCodeHighlighter *pseudoHighlighter;
 
     int currentFunctionIndex;
     QList< QVector<int> > history;

@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     widgets/symbolstablewidget.cpp \
     widgets/fileinfotablewidget.cpp \
     widgets/relocationstable.cpp \
-    widgets/importstablewidget.cpp
+    widgets/importstablewidget.cpp \
+    highlighters/pseudocodehighlighter.cpp
 
 HEADERS  += mainwindow.h \
     r2handler.h \
@@ -37,7 +38,8 @@ HEADERS  += mainwindow.h \
     widgets/symbolstablewidget.h \
     widgets/fileinfotablewidget.h \
     widgets/relocationstable.h \
-    widgets/importstablewidget.h
+    widgets/importstablewidget.h \
+    highlighters/pseudocodehighlighter.h
 
 FORMS    += mainwindow.ui \
     resultsdialog.ui
