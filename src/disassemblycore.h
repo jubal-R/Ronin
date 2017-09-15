@@ -20,6 +20,7 @@ public:
     QStringList getStrings();
 
     QStringList getFunctionNames();
+    bool functionExists(QString function);
     QString getFunctionAddress(QString name);
     QString getFunctionDisassembly(QString name);
     QString getPseudoCode(QString name);

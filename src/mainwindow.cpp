@@ -190,9 +190,12 @@ void MainWindow::loadBinary(QString file){
             setUpdatesEnabled(false);
             relocationsTableWidget->insertRelocations(disassemblyCore.getRelocations());
             symbolsTableWidget->insertSymbols(disassemblyCore.getSymbols());
-            fileInfoTableWidget->insertInfo(disassemblyCore.getFileInfo());
             importsTableWidget->insertImports(disassemblyCore.getImports());
+            fileInfoTableWidget->insertInfo(disassemblyCore.getFileInfo());
+            setStatusBarLabelValues();
             setUpdatesEnabled(true);
+
+
 
             // Load strings data
             QStringList strOutputList = disassemblyCore.getStrings();
@@ -244,6 +247,9 @@ void MainWindow::displayFunctionData(){
         // Populate function list in sidebar
         ui->functionList->addItems(disassemblyCore.getFunctionNames());
 
+        if (disassemblyCore.functionExists("entry0")){
+            displayFunctionText("entry0");
+        }
     }
 }
 
@@ -269,6 +275,16 @@ void MainWindow::displayHexData(){
     setUpdatesEnabled(true);
 }
 
+void MainWindow::setStatusBarLabelValues(){
+    QVector<QStringList> fileInfo = disassemblyCore.getFileInfo();
+    if (fileInfo.length() >= 4){
+        ui->archValueLabel->setText(fileInfo[0].at(1));
+        ui->bitsValueLabel->setText(fileInfo[3].at(1));
+        ui->sizeValueLabel->setText(fileInfo[1].at(1));
+        ui->formatValueLabel->setText(fileInfo[2].at(1));
+    }
+}
+
 void MainWindow::clearUi(){
     while (ui->functionList->count() > 0){
         ui->functionList->takeItem(0);
@@ -278,7 +294,6 @@ void MainWindow::clearUi(){
     ui->codeBrowser->clear();
     ui->pseudoCodeBrowser->clear();
     ui->hexBrowser->clear();
-    ui->fileFormatlabel->clear();
     ui->stringsAddressBrowser->clear();
     ui->stringsBrowser->clear();
 

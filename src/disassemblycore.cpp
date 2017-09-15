@@ -79,6 +79,17 @@ QStringList DisassemblyCore::getFunctionNames(){
     return functionNames;
 }
 
+bool DisassemblyCore::functionExists(QString function){
+    int numFunctions = functionsData.length();
+
+    for (int i = 0; i < numFunctions; i++){
+        if (functionsData[i][0] == function)
+            return true;
+    }
+
+    return false;
+}
+
 QString DisassemblyCore::getFunctionAddress(QString name){
     int numFunctions = functionsData.length();
 

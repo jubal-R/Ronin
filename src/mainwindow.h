@@ -65,6 +65,8 @@ private slots:
 
     void setSidebarStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor3);
 
+    void setStatusBarLabelValues();
+
     void on_actionProject_triggered();
 
     void on_actionExit_triggered();
