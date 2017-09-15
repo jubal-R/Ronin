@@ -17,7 +17,7 @@ public:
     QVector<QStringList> is();
     QVector< QVector<QString> > S();
     QVector< QVector<QString> > iz();
-    QStringList getFunctionList();
+    QVector< QVector<QString> > afl();
     QString pdf(QString functionName);
     QString pdc(QString functionName);
     QString px(QString args);

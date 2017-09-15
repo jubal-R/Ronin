@@ -11,6 +11,8 @@ public:
     DisassemblyCore();
     void disassemble(QString file);
     bool disassemblyIsLoaded();
+    void loadFunctionData();
+
     QVector<QStringList> getFileInfo();
     QVector<QStringList> getRelocations();
     QVector<QStringList> getSymbols();
@@ -18,6 +20,7 @@ public:
     QStringList getStrings();
 
     QStringList getFunctionNames();
+    QString getFunctionAddress(QString name);
     QString getFunctionDisassembly(QString name);
     QString getPseudoCode(QString name);
 
@@ -27,6 +30,7 @@ public:
 private:
     R2Handler r2h;
     bool fileLoaded;
+    QVector< QVector<QString> > functionsData;
 
 };
 

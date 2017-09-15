@@ -14,6 +14,7 @@ DisassemblyCore::DisassemblyCore()
 
 void DisassemblyCore::disassemble(QString file){
     r2h.startR2(file);
+    loadFunctionData();
     fileLoaded = true;
 }
 
@@ -63,9 +64,32 @@ QStringList DisassemblyCore::getStrings(){
  * Function Data
 */
 
-QStringList DisassemblyCore::getFunctionNames(){
-    return r2h.getFunctionList();
+void DisassemblyCore::loadFunctionData(){
+    functionsData = r2h.afl();
 }
+
+QStringList DisassemblyCore::getFunctionNames(){
+    QStringList functionNames;
+    int numFunctions = functionsData.length();
+
+    for (int i = 0; i < numFunctions; i++){
+        functionNames.append(functionsData[i][0]);
+    }
+
+    return functionNames;
+}
+
+QString DisassemblyCore::getFunctionAddress(QString name){
+    int numFunctions = functionsData.length();
+
+    for (int i = 0; i < numFunctions; i++){
+        if (functionsData[i][0] == name)
+            return functionsData[i][2];
+    }
+
+    return "";
+}
+
 QString DisassemblyCore::getFunctionDisassembly(QString name){
     return r2h.pdf(name);
 }

@@ -411,7 +411,7 @@ font-size: 11pt;</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="addressLabel">
+                  <widget class="QLabel" name="functionAddressLabel">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                      <horstretch>0</horstretch>
@@ -424,7 +424,7 @@ font-size: 11pt;</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="addressValueLabel">
+                  <widget class="QLabel" name="functionAddressValueLabel">
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>

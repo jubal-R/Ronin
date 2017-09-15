@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sansBold.setBold(true);
 
     ui->functionLabel->setFont(sansBold);
-    ui->addressLabel->setFont(sansBold);
+    ui->functionAddressLabel->setFont(sansBold);
     ui->stringsAddressLabel->setFont(sansBold);
     ui->stringsLabel->setFont(sansBold);
 
@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->codeBrowser->setFont(mono);
     ui->pseudoCodeBrowser->setFont(mono);
     ui->hexBrowser->setFont(mono);
-    ui->addressValueLabel->setFont(mono);
+    ui->functionAddressValueLabel->setFont(mono);
 
     // Monospace Bold
     int monoBoldId = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro B.ttf");
@@ -168,7 +168,7 @@ void MainWindow::loadBinary(QString file){
 
             if (!disassemblyCore.disassemblyIsLoaded()){
                 ui->codeBrowser->setPlainText("File format not recognized.");
-                ui->addressLabel->setText("");
+                ui->functionAddressLabel->setText("");
                 ui->functionLabel->setText("");
             } else {
                 // If all good, display disassembly data
@@ -229,6 +229,7 @@ void MainWindow::displayFunctionText(QString functionName){
     if (disassemblyCore.disassemblyIsLoaded()){
         setUpdatesEnabled(false);
         ui->functionLabel->setText(functionName);
+        ui->functionAddressValueLabel->setText(disassemblyCore.getFunctionAddress(functionName));
         ui->codeBrowser->setPlainText(disassemblyCore.getFunctionDisassembly(functionName));
         ui->pseudoCodeBrowser->setPlainText(disassemblyCore.getPseudoCode(functionName));
         setUpdatesEnabled(true);
@@ -271,7 +272,7 @@ void MainWindow::clearUi(){
     while (ui->functionList->count() > 0){
         ui->functionList->takeItem(0);
     }
-    ui->addressValueLabel->clear();
+    ui->functionAddressValueLabel->clear();
     ui->functionLabel->clear();
     ui->codeBrowser->clear();
     ui->hexBrowser->clear();
@@ -330,7 +331,6 @@ void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 {
     // Display function
     displayFunctionText(item->text());
-    ui->disTabWidget->setCurrentIndex(0);
     // Add new location to history
     addToHistory(currentFunctionIndex, 0);
 }

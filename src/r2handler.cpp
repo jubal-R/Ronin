@@ -202,27 +202,37 @@ QVector< QVector<QString> > R2Handler::iz(){
     return stringsData;
 }
 
-QStringList R2Handler::getFunctionList(){
-    QStringList functions;
-    QString output = r2->cmd("afl");
-    QVector<QStringRef> outputLines = output.splitRef("\n");
-    int numLines = outputLines.length();
-    for (int i = 0; i < numLines; i++){
-        QVector<QStringRef> currentLine = outputLines.at(i).split(" ");
-        QString functionName = currentLine.last().toString();
-        functions.append(functionName);
+QVector< QVector<QString> > R2Handler::afl(){
+    QVector< QVector<QString> > functionsData;
+    QString jsonStr = r2->cmd("aflj");
+    QJsonArray jsonArray = strToJsonArray(jsonStr);
+    int arrayLen = jsonArray.size();
+
+    for (int i = 0; i < arrayLen; i++){
+        QJsonValue indexVal = jsonArray.at(i);
+        QJsonObject jsonObj = indexVal.toObject();
+
+        QString name = jsonObj["name"].toString();
+        QString size = QString::number(jsonObj["size"].toInt(), 16);
+        QString vaddr = QString::number(jsonObj["offset"].toInt(), 16);
+
+        QVector<QString> function(3);
+        function[0] = name;
+        function[1] = "0x" + size;
+        function[2] = "0x" + vaddr;
+        functionsData.append(function);
     }
 
-    return functions;
+    return functionsData;
 }
 
 QString R2Handler::pdf(QString functionName){
-    QString functionDisassembly = r2->cmd("pdf @" + functionName);
+    QString functionDisassembly = r2->cmd("pdf @ " + functionName);
     return functionDisassembly;
 }
 
 QString R2Handler::pdc(QString functionName){
-    QString pseudoCode = r2->cmd("pdc @" + functionName);
+    QString pseudoCode = r2->cmd("pdc @ " + functionName);
     return pseudoCode;
 }
 
