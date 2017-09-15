@@ -622,6 +622,12 @@ void MainWindow::on_findButton_clicked()
         targetWidget = ui->codeBrowser;
         break;
     case 1:
+        targetWidget = ui->graphBrowser;
+        break;
+    case 2:
+        targetWidget = ui->pseudoCodeBrowser;
+        break;
+    case 3:
         targetWidget = ui->hexBrowser;
         break;
     default:
