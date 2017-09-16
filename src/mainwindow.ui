@@ -1145,8 +1145,6 @@ color: rgb(85, 85, 85);</string>
     </property>
     <addaction name="actionBack"/>
     <addaction name="actionForward"/>
-    <addaction name="actionGo_To_Address"/>
-    <addaction name="actionGo_to_Address_at_Cursor"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -1167,9 +1165,6 @@ color: rgb(85, 85, 85);</string>
      <string>Search</string>
     </property>
     <addaction name="actionFind_2"/>
-    <addaction name="actionFind_References"/>
-    <addaction name="actionFind_Calls_to_Current_Function"/>
-    <addaction name="actionFind_Calls_to_Current_Location"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -1210,17 +1205,6 @@ color: rgb(85, 85, 85);</string>
     <string>Find</string>
    </property>
   </action>
-  <action name="actionGo_To_Address">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Go to Address</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+G</string>
-   </property>
-  </action>
   <action name="actionGet_Offset">
    <property name="enabled">
     <bool>false</bool>
@@ -1230,17 +1214,6 @@ color: rgb(85, 85, 85);</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
-   </property>
-  </action>
-  <action name="actionGo_to_Address_at_Cursor">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Go to Address at Cursor</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Return</string>
    </property>
   </action>
   <action name="actionBack">
@@ -1259,45 +1232,12 @@ color: rgb(85, 85, 85);</string>
     <string>Ctrl+]</string>
    </property>
   </action>
-  <action name="actionFind_Calls_to_Current_Function">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Find Calls to Current Function</string>
-   </property>
-   <property name="shortcut">
-    <string>Shift+X</string>
-   </property>
-  </action>
-  <action name="actionFind_Calls_to_Current_Location">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Find Calls to Current Location</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+X</string>
-   </property>
-  </action>
   <action name="actionFind_2">
    <property name="text">
     <string>Find</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
-   </property>
-  </action>
-  <action name="actionFind_References">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Find References</string>
-   </property>
-   <property name="shortcut">
-    <string>Shift+R</string>
    </property>
   </action>
   <action name="actionDefault">

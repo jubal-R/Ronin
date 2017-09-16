@@ -6,7 +6,7 @@
 #include "QPlainTextEdit"
 #include "QSettings"
 
-#include "disassemblycore.h"
+#include "ronincore.h"
 #include "files.h"
 #include "highlighters/disassemblyhighlighter.h"
 #include "highlighters/pseudocodehighlighter.h"
@@ -30,42 +30,23 @@ public:
 
 private slots:
     void highlightCurrentLine();
-
-    void on_actionOpen_triggered();
-
     void loadBinary(QString file);
-
-    void displayFunctionText(QString functionName);
-
-    void displayFunctionData();
-
+    void displayFunctionData(QString functionName);
+    void populateFunctionsList();
     void displayHexData();
-
     void clearUi();
-
     void enableMenuItems();
-
-    void goToAddress(QString targetAddress);
-
-    void addToHistory(int functionIndex, int lineNum);
-
+    void displayResults(QVector< QVector<QString> > results, QString resultsLabel);
+    void setStatusBarLabelValues();
     void find(QString searchTerm, QPlainTextEdit *targetWidget, bool searchBackwords);
 
-    void findReferencesToLocation(QString location);
-
-    void displayResults(QVector< QVector<QString> > results, QString resultsLabel);
-
     void setCentralWidgetStyle(QString foregroundColor, QString backgroundColor);
-
     void setMainStyle(QString backgroundColor2, QString backgroundColor3);
-
     void setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor);
-
     void setInfoTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString backgroundColor3);
-
     void setSidebarStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor3);
 
-    void setStatusBarLabelValues();
+    void on_actionOpen_triggered();
 
     void on_actionProject_triggered();
 
@@ -75,11 +56,7 @@ private slots:
 
     void on_functionList_itemDoubleClicked(QListWidgetItem *item);
 
-    void on_actionGo_To_Address_triggered();
-
     void on_actionGet_Offset_triggered();
-
-    void on_actionGo_to_Address_at_Cursor_triggered();
 
     void on_backButton_clicked();
 
@@ -89,10 +66,6 @@ private slots:
 
     void on_actionForward_triggered();
 
-    void on_actionFind_Calls_to_Current_Function_triggered();
-
-    void on_actionFind_Calls_to_Current_Location_triggered();
-
     void on_actionFind_2_triggered();
 
     void on_findButton_clicked();
@@ -100,8 +73,6 @@ private slots:
     void on_findLineEdit_returnPressed();
 
     void on_findPrevButton_clicked();
-
-    void on_actionFind_References_triggered();
 
     void on_actionDefault_triggered();
 
@@ -115,7 +86,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    DisassemblyCore disassemblyCore;
+    RoninCore roninCore;
     Files files;
     QSettings settings;
 
@@ -128,10 +99,8 @@ private:
     DisassemblyHighlighter *graphHighlighter;
     PseudoCodeHighlighter *pseudoHighlighter;
 
-    int currentFunctionIndex;
     QList< QVector<int> > history;
     QList< QVector<int> >::const_iterator historyIterator;
-    QVector<QString> baseOffsets;
     QString currentSearchTerm;
     QColor lineColor;
 };

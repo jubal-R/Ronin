@@ -31,10 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->stringsBrowser->verticalScrollBar(), SIGNAL(valueChanged(int)), ui->stringsAddressBrowser->verticalScrollBar(), SLOT(setValue(int)));
 
     /*
-     *  Setup builtin fonts
+     *  Setup built-in fonts
     */
 
-    // Sans serif
     int sansid = QFontDatabase::addApplicationFont(":/fonts/NotoSans-Regular.ttf");
     QString sansfamily = QFontDatabase::applicationFontFamilies(sansid).at(0);
     QFont sans(sansfamily);
@@ -47,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->stringsAddressBrowser->setFont(sans);
     ui->stringsBrowser->setFont(sans);
 
-    // Sans serif bold
     int sansBoldId = QFontDatabase::addApplicationFont(":/fonts/NotoSans-Bold.ttf");
     QString sansBoldFamily = QFontDatabase::applicationFontFamilies(sansBoldId).at(0);
     QFont sansBold(sansBoldFamily);
@@ -59,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->stringsAddressLabel->setFont(sansBold);
     ui->stringsLabel->setFont(sansBold);
 
-    // Monospace
     int monoid = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro.ttf");
     QString monofamily = QFontDatabase::applicationFontFamilies(monoid).at(0);
     QFont mono(monofamily);
@@ -71,7 +68,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->hexBrowser->setFont(mono);
     ui->functionAddressValueLabel->setFont(mono);
 
-    // Monospace Bold
     int monoBoldId = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro B.ttf");
     QString monoBoldFamily = QFontDatabase::applicationFontFamilies(monoBoldId).at(0);
     QFont monoBold(monoBoldFamily);
@@ -122,17 +118,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->codeBrowser, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 
-    currentFunctionIndex = 0;
-
 }
 
 MainWindow::~MainWindow()
 {
-    /*
-     *  Save Settings
-    */
-
-    // Get Window Size
     QRect windowRect = MainWindow::normalGeometry();
     settings.setValue("windowWidth", windowRect.width());
     settings.setValue("windowHeight", windowRect.height());
@@ -141,11 +130,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 /*
- *  Load Disassembly
+ *  Display Data
 */
 
-//  Load binary and display disassembly
 void MainWindow::loadBinary(QString file){
 
     if (file != ""){
@@ -153,35 +142,30 @@ void MainWindow::loadBinary(QString file){
 
         clearUi();
 
-        if (true) {
-            QProgressDialog progress("Loading Disassembly", "", 0, 4, this);
-            progress.setCancelButton(0);
-            progress.setWindowModality(Qt::WindowModal);
-            progress.setMinimumDuration(500);
-            progress.setValue(0);
+        QProgressDialog progress("Loading File", "", 0, 4, this);
+        progress.setCancelButton(0);
+        progress.setWindowModality(Qt::WindowModal);
+        progress.setMinimumDuration(500);
+        progress.setValue(0);
 
-            // Disassemble in seperate thread
-            QFuture<void> disassemblyThread = QtConcurrent::run(&disassemblyCore, &DisassemblyCore::disassemble, file);
+        // Disassemble in seperate thread
+        QFuture<void> loadFileThread = QtConcurrent::run(&roninCore, &RoninCore::loadFile, file);
 
-            while (!disassemblyThread.isFinished()){
-                qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+        while (!loadFileThread.isFinished()){
+            qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+        }
+
+        progress.setValue(1);
+
+        if (roninCore.fileIsLoaded()){
+            populateFunctionsList();
+
+            // Display entrypoint on file load
+            if (roninCore.functionExists("entry0")){
+                displayFunctionData("entry0");
             }
 
-            progress.setValue(1);
-
-            if (!disassemblyCore.disassemblyIsLoaded()){
-                ui->codeBrowser->setPlainText("File format not recognized.");
-                ui->functionAddressValueLabel->setText("");
-                ui->functionLabel->setText("");
-            } else {
-                // If all good, display disassembly data
-                displayFunctionData();
-
-                // Add initial location to history
-                addToHistory(currentFunctionIndex, 0);
-
-                enableMenuItems();
-            }
+            enableMenuItems();
 
             progress.setValue(2);
 
@@ -190,19 +174,16 @@ void MainWindow::loadBinary(QString file){
             progress.setValue(3);
 
             setUpdatesEnabled(false);
-            relocationsTableWidget->insertRelocations(disassemblyCore.getRelocations());
-            symbolsTableWidget->insertSymbols(disassemblyCore.getSymbols());
-            importsTableWidget->insertImports(disassemblyCore.getImports());
-            fileInfoTableWidget->insertInfo(disassemblyCore.getFileInfo());
+            relocationsTableWidget->insertRelocations(roninCore.getRelocations());
+            symbolsTableWidget->insertSymbols(roninCore.getSymbols());
+            importsTableWidget->insertImports(roninCore.getImports());
+            fileInfoTableWidget->insertInfo(roninCore.getFileInfo());
             setStatusBarLabelValues();
-            setUpdatesEnabled(true);
 
-
-
-            // Load strings data
-            QStringList strOutputList = disassemblyCore.getStrings();
+            QStringList strOutputList = roninCore.getStrings();
             ui->stringsAddressBrowser->setPlainText(strOutputList.at(0));
             ui->stringsBrowser->setPlainText(strOutputList.at(1));
+            setUpdatesEnabled(true);
 
             progress.setValue(4);
         }
@@ -212,45 +193,31 @@ void MainWindow::loadBinary(QString file){
 // Disassemble
 void MainWindow::on_actionOpen_triggered()
 {
-    // Prompt user for file
     QString file = QFileDialog::getOpenFileName(this, tr("Open File"), files.getCurrentDirectory(), tr("All (*)"));
 
-    // Update current directory and load file
     if (file != ""){
         files.setCurrentDirectory(file);
-
         loadBinary(file);
     }
 
 }
 
-/*
- *  Display Disassembly Data
-*/
-
-// Set lables and code browser to display function info and contents
-void MainWindow::displayFunctionText(QString functionName){
-    if (disassemblyCore.disassemblyIsLoaded()){
+void MainWindow::displayFunctionData(QString functionName){
+    if (roninCore.fileIsLoaded()){
         setUpdatesEnabled(false);
         ui->functionLabel->setText(functionName);
-        ui->functionAddressValueLabel->setText(disassemblyCore.getFunctionAddress(functionName));
-        ui->codeBrowser->setPlainText(disassemblyCore.getFunctionDisassembly(functionName));
-        ui->pseudoCodeBrowser->setPlainText(disassemblyCore.getPseudoCode(functionName));
-        ui->graphBrowser->setPlainText(disassemblyCore.getFunctionGraph(functionName));
+        ui->functionAddressValueLabel->setText(roninCore.getFunctionAddress(functionName));
+        ui->codeBrowser->setPlainText(roninCore.getFunctionDisassembly(functionName));
+        ui->pseudoCodeBrowser->setPlainText(roninCore.getPseudoCode(functionName));
+        ui->graphBrowser->setPlainText(roninCore.getFunctionGraph(functionName));
         setUpdatesEnabled(true);
 
     }
 }
 
-// Setup functionlist and display function data
-void MainWindow::displayFunctionData(){
-    if (disassemblyCore.disassemblyIsLoaded()){
-        // Populate function list in sidebar
-        ui->functionList->addItems(disassemblyCore.getFunctionNames());
-
-        if (disassemblyCore.functionExists("entry0")){
-            displayFunctionText("entry0");
-        }
+void MainWindow::populateFunctionsList(){
+    if (roninCore.fileIsLoaded()){
+        ui->functionList->addItems(roninCore.getFunctionNames());
     }
 }
 
@@ -270,14 +237,13 @@ void MainWindow::highlightCurrentLine(){
 }
 
 void MainWindow::displayHexData(){
-    // Set hex view values
     setUpdatesEnabled(false);
-    ui->hexBrowser->setPlainText(disassemblyCore.getHexDump());
+    ui->hexBrowser->setPlainText(roninCore.getHexDump());
     setUpdatesEnabled(true);
 }
 
 void MainWindow::setStatusBarLabelValues(){
-    QVector<QStringList> fileInfo = disassemblyCore.getFileInfo();
+    QVector<QStringList> fileInfo = roninCore.getFileInfo();
     if (fileInfo.length() >= 4){
         ui->archValueLabel->setText(fileInfo[0].at(1));
         ui->bitsValueLabel->setText(fileInfo[3].at(1));
@@ -302,64 +268,28 @@ void MainWindow::clearUi(){
     history.clear();
 }
 
+// To enable navigation and tools once a file is loaded
 void MainWindow::enableMenuItems(){
-    // Enable navigation and tools
-    ui->actionGo_To_Address->setEnabled(true);
-    ui->actionGo_to_Address_at_Cursor->setEnabled(true);
     ui->actionGet_Offset->setEnabled(true);
-    ui->actionFind_References->setEnabled(true);
-    ui->actionFind_Calls_to_Current_Function->setEnabled(true);
-    ui->actionFind_Calls_to_Current_Location->setEnabled(true);
 }
 
 /*
  *  Navigation
 */
 
-// Go to virtual memory address
-void MainWindow::goToAddress(QString targetAddress){
-
-}
-
-// Go to Address triggered
-void MainWindow::on_actionGo_To_Address_triggered()
-{
-    bool ok = true;
-    QString targetAddress = QInputDialog::getText(this, tr("Go to Address"),tr("Address"), QLineEdit::Normal,"", &ok).trimmed();
-    if (ok)
-        goToAddress(targetAddress);
-
-}
-
-// Go to Address at Cursor triggered
-void MainWindow::on_actionGo_to_Address_at_Cursor_triggered()
-{
-    QTextCursor cursor = ui->codeBrowser->textCursor();
-    cursor.select(QTextCursor::WordUnderCursor);
-    QString targetAddress = cursor.selectedText();
-    if (targetAddress.startsWith("0x")){
-        targetAddress = targetAddress.mid(2);
-    }
-
-    goToAddress(targetAddress);
-}
-
-// Display function clicked in sidebar
+// Display function when double clicked in sidebar
 void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 {
-    // Display function
-    displayFunctionText(item->text());
-    // Add new location to history
-    addToHistory(currentFunctionIndex, 0);
+    displayFunctionData(item->text());
 }
 
-// Get file offset of current line of disassembly
+// Prompt for address or function and return its offset(physical address)
 void MainWindow::on_actionGet_Offset_triggered()
 {
     bool ok;
     QString virtualAddress = QInputDialog::getText(this, tr("Get File Offset"),tr("Get file offset of address or function"), QLineEdit::Normal,"", &ok).trimmed();
     if (ok && !virtualAddress.isEmpty()){
-        QString paddr = disassemblyCore.getPaddr(virtualAddress);
+        QString paddr = roninCore.getPaddr(virtualAddress);
 
         if(paddr != "0xffffffffffffffff\n"){
             QString offsetMsg = "File offset of address " + virtualAddress + "\npaddr: " + paddr;
@@ -378,62 +308,16 @@ void MainWindow::on_actionGet_Offset_triggered()
  *  History
 */
 
-// Add location to history and update iterator
-void MainWindow::addToHistory(int functionIndex, int lineNum){
-    QVector<int> item(2);
-    item[0] = functionIndex;
-    item[1] = lineNum;
-
-    // Note: constEnd() points to imaginary item after last item
-    if (historyIterator != history.constEnd() - 1)
-        history = history.mid(0, historyIterator - history.constBegin() + 1);
-
-    history.append(item);
-    historyIterator = history.constEnd() - 1;
-}
-
 // Back button
 void MainWindow::on_backButton_clicked()
 {
-    if (!history.isEmpty() && historyIterator != history.constBegin()){
-        historyIterator--;
-        QVector<int> prevLocation = historyIterator.i->t();
 
-        // Display prev function
-        setUpdatesEnabled(false);
-        if (currentFunctionIndex != prevLocation[0]){
-//            displayFunctionText(prevLocation[0]);
-//            ui->functionList->setCurrentRow(prevLocation[0]);
-        }
-        // Go to prev line
-        QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(prevLocation[1]));
-        ui->codeBrowser->setTextCursor(cursor);
-        ui->disTabWidget->setCurrentIndex(0);
-        ui->codeBrowser->setFocus();
-        setUpdatesEnabled(true);
-    }
 }
 
 // Forward button
 void MainWindow::on_forwardButton_clicked()
 {
-    if (!history.isEmpty() && historyIterator != history.constEnd() - 1){
-        historyIterator++;
-        QVector<int> nextLocation = historyIterator.i->t();
 
-        // Display prev function
-        setUpdatesEnabled(false);
-        if (currentFunctionIndex != nextLocation[0]){
-//            displayFunctionText(nextLocation[0]);
-//            ui->functionList->setCurrentRow(nextLocation[0]);
-        }
-        // Go to prev line
-        QTextCursor cursor(ui->codeBrowser->document()->findBlockByLineNumber(nextLocation[1]));
-        ui->codeBrowser->setTextCursor(cursor);
-        ui->disTabWidget->setCurrentIndex(0);
-        ui->codeBrowser->setFocus();
-        setUpdatesEnabled(true);
-    }
 }
 
 void MainWindow::on_actionBack_triggered()
@@ -467,68 +351,6 @@ void MainWindow::displayResults(QVector< QVector<QString> > results, QString res
         resultsDialog.setResultsText(resultsStr);
         resultsDialog.exec();
     }
-}
-
-// Find calls to the current function
-void MainWindow::on_actionFind_Calls_to_Current_Function_triggered()
-{
-//    QString functionName = disassemblyCore.getFunction(currentFunctionIndex).getName();
-//    QVector< QVector<QString> > results = disassemblyCore.findCallsToFunction(functionName);
-
-//    if (!results.isEmpty()){
-//        // Display results
-//        displayResults(results, "Calls to function " + functionName);
-
-//    } else {
-//        QMessageBox::information(this, tr("Calls to Function"), "No calls found to function " + functionName,QMessageBox::Close);
-//    }
-}
-
-// Find all references to a target location
-void MainWindow::findReferencesToLocation(QString target){
-//    if (!target.isEmpty()){
-//        QVector< QVector<QString> > results = disassemblyCore.findReferences(target);
-
-//        if (!results.isEmpty()){
-//            // Display results
-//            displayResults(results, "References to " + target);
-
-//        } else {
-//            QMessageBox::information(this, tr("References"), "No references found to " + target,QMessageBox::Close);
-//        }
-
-//    } else {
-//        QMessageBox::warning(this, tr("Search failed"), "Cannot search for empty string.",QMessageBox::Close);
-//    }
-
-}
-
-// Find References
-void MainWindow::on_actionFind_References_triggered()
-{
-    bool ok = true;
-    QString targetAddress = QInputDialog::getText(this, tr("Find References"),tr("Find References to"), QLineEdit::Normal,"", &ok).trimmed();
-    if (ok)
-        findReferencesToLocation(targetAddress);
-}
-
-// Find all calls to current location
-void MainWindow::on_actionFind_Calls_to_Current_Location_triggered(){
-//    if (disassemblyCore.disassemblyIsLoaded()){
-//        QTextCursor cursor = ui->codeBrowser->textCursor();
-//        int lineNum = cursor.blockNumber();
-//        QString targetLocation = disassemblyCore.getFunction(currentFunctionIndex).getAddressAt(lineNum);
-
-//        QVector< QVector<QString> > results = disassemblyCore.findReferences(targetLocation);
-
-//        if (!results.isEmpty()){
-//            // Display results
-//            displayResults(results, "Calls to address " + targetLocation);
-
-//        } else {
-//            QMessageBox::information(this, tr("Calls to address"), "No calls found to address " + targetLocation,QMessageBox::Close);
-//        }
-//    }
 }
 
 // Toggle searchbar
@@ -656,6 +478,12 @@ void MainWindow::on_findPrevButton_clicked()
         targetWidget = ui->codeBrowser;
         break;
     case 1:
+        targetWidget = ui->graphBrowser;
+        break;
+    case 2:
+        targetWidget = ui->pseudoCodeBrowser;
+        break;
+    case 3:
         targetWidget = ui->hexBrowser;
         break;
     default:
@@ -683,6 +511,7 @@ void MainWindow::setCentralWidgetStyle(QString foregroundColor2, QString backgro
     ui->centralWidget->setStyleSheet(centralWidgetStyle);
 }
 
+// Main styling
 void MainWindow::setMainStyle(QString backgroundColor, QString backgroundColor3){
     QString mainStyle = "QScrollBar:vertical {"
                         "background: "+ backgroundColor3 +";"
@@ -715,7 +544,7 @@ void MainWindow::setMainStyle(QString backgroundColor, QString backgroundColor3)
     ui->main->setStyleSheet(mainStyle);
 }
 
-// Style tab widget
+// Style primary tab widget
 void MainWindow::setTabWidgetStyle(QString foregroundColor, QString backgroundColor, QString backgroundColor2, QString addressColor){
     QString style = "#disTab, #hexTab, #pseudoTab, #graphTab {"
                 "background-color: " + backgroundColor + ";"

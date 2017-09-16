@@ -1,16 +1,16 @@
-#ifndef DISASSEMBLYCORE_H
-#define DISASSEMBLYCORE_H
+#ifndef RONINCORE_H
+#define RONINCORE_H
 
 #include "QString"
 
 #include "r2handler.h"
 
-class DisassemblyCore
+class RoninCore
 {
 public:
-    DisassemblyCore();
-    void disassemble(QString file);
-    bool disassemblyIsLoaded();
+    RoninCore();
+    void loadFile(QString file);
+    bool fileIsLoaded();
     void loadFunctionData();
 
     QVector<QStringList> getFileInfo();
@@ -36,4 +36,4 @@ private:
 
 };
 
-#endif // DISASSEMBLYCORE_H
+#endif // RONINCORE_H

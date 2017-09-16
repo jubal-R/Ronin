@@ -1,47 +1,40 @@
-#include "disassemblycore.h"
+#include "ronincore.h"
 
-#include "QtConcurrent/QtConcurrent"
-#include "QFuture"
-
-DisassemblyCore::DisassemblyCore()
+RoninCore::RoninCore()
 {
     fileLoaded = false;
 }
 
-/*
- *  Disassembly
-*/
-
-void DisassemblyCore::disassemble(QString file){
+void RoninCore::loadFile(QString file){
     r2h.startR2(file);
     loadFunctionData();
     fileLoaded = true;
 }
 
-bool DisassemblyCore::disassemblyIsLoaded(){
+bool RoninCore::fileIsLoaded(){
     if (fileLoaded)
         return true;
     else
         return false;
 }
 
-QVector<QStringList> DisassemblyCore::getFileInfo(){
+QVector<QStringList> RoninCore::getFileInfo(){
     return r2h.iI();
 }
 
-QVector<QStringList> DisassemblyCore::getRelocations(){
+QVector<QStringList> RoninCore::getRelocations(){
     return r2h.ir();
 }
 
-QVector<QStringList> DisassemblyCore::getSymbols(){
+QVector<QStringList> RoninCore::getSymbols(){
     return r2h.is();
 }
 
-QVector<QStringList> DisassemblyCore::getImports(){
+QVector<QStringList> RoninCore::getImports(){
     return r2h.ii();
 }
 
-QStringList DisassemblyCore::getStrings(){
+QStringList RoninCore::getStrings(){
     QVector< QVector<QString> > stringsData = r2h.iz();
     int numStrings = stringsData.length();
 
@@ -60,15 +53,15 @@ QStringList DisassemblyCore::getStrings(){
     return stringsOutputList;
 }
 
-/*
- * Function Data
-*/
-
-void DisassemblyCore::loadFunctionData(){
+void RoninCore::loadFunctionData(){
+    /* Function Data
+     * Each element contains vector of data for each function in following format:
+     * [Function name], [size], [virtual address]
+    */
     functionsData = r2h.afl();
 }
 
-QStringList DisassemblyCore::getFunctionNames(){
+QStringList RoninCore::getFunctionNames(){
     QStringList functionNames;
     int numFunctions = functionsData.length();
 
@@ -79,7 +72,7 @@ QStringList DisassemblyCore::getFunctionNames(){
     return functionNames;
 }
 
-bool DisassemblyCore::functionExists(QString function){
+bool RoninCore::functionExists(QString function){
     int numFunctions = functionsData.length();
 
     for (int i = 0; i < numFunctions; i++){
@@ -90,7 +83,7 @@ bool DisassemblyCore::functionExists(QString function){
     return false;
 }
 
-QString DisassemblyCore::getFunctionAddress(QString name){
+QString RoninCore::getFunctionAddress(QString name){
     int numFunctions = functionsData.length();
 
     for (int i = 0; i < numFunctions; i++){
@@ -101,18 +94,18 @@ QString DisassemblyCore::getFunctionAddress(QString name){
     return "";
 }
 
-QString DisassemblyCore::getFunctionDisassembly(QString name){
+QString RoninCore::getFunctionDisassembly(QString name){
     return r2h.pdf(name);
 }
 
-QString DisassemblyCore::getPseudoCode(QString name){
+QString RoninCore::getPseudoCode(QString name){
     return r2h.pdc(name);
 }
 
-QString DisassemblyCore::getFunctionGraph(QString name){
+QString RoninCore::getFunctionGraph(QString name){
     QString asciiGraph = r2h.agf(name);
 
-    // Remove uneccessary first line
+    // Remove unnecessary first line
     int len = asciiGraph.length();
     int index = 0;
     while (index < len && asciiGraph.at(index) != QChar('\n')){
@@ -124,10 +117,10 @@ QString DisassemblyCore::getFunctionGraph(QString name){
     return asciiGraph;
 }
 
-QString DisassemblyCore::getHexDump(){
+QString RoninCore::getHexDump(){
     return r2h.px("$s @0");
 }
 
-QString DisassemblyCore::getPaddr(QString vaddr){
+QString RoninCore::getPaddr(QString vaddr){
     return r2h.paddr(vaddr);
 }

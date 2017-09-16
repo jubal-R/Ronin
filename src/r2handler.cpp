@@ -32,6 +32,7 @@ void R2Handler::aa(){
     r2->cmd("aa");
 }
 
+// Analyze some more
 void R2Handler::aaa(){
     r2->cmd("aaa");
 }
@@ -179,6 +180,7 @@ QVector< QVector<QString> > R2Handler::S(){
     return sectionsData;
 }
 
+// Strings
 QVector< QVector<QString> > R2Handler::iz(){
     QVector< QVector<QString> > stringsData;
     QString jsonStr = r2->cmd("izj");
@@ -202,6 +204,7 @@ QVector< QVector<QString> > R2Handler::iz(){
     return stringsData;
 }
 
+// Function List
 QVector< QVector<QString> > R2Handler::afl(){
     QVector< QVector<QString> > functionsData;
     QString jsonStr = r2->cmd("aflj");
@@ -226,26 +229,31 @@ QVector< QVector<QString> > R2Handler::afl(){
     return functionsData;
 }
 
+// Function disassembly
 QString R2Handler::pdf(QString functionName){
     QString functionDisassembly = r2->cmd("pdf @ " + functionName);
     return functionDisassembly;
 }
 
+// Function pseudo code
 QString R2Handler::pdc(QString functionName){
     QString pseudoCode = r2->cmd("pdc @ " + functionName);
     return pseudoCode;
 }
 
+// Ascii graph of function
 QString R2Handler::agf(QString functionName){
     QString asciiGraph = r2->cmd("agf @" + functionName);
     return asciiGraph;
 }
 
+// Hexdump
 QString R2Handler::px(QString args){
     QString hexdump = r2->cmd("px " + args);
     return hexdump;
 }
 
+// Convert virtual address to physical address
 QString R2Handler::paddr(QString vaddr){
     vaddr = sanitizeInput(vaddr);
     QString paddr = r2->cmd("?p " + vaddr);

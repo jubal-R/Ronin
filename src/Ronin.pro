@@ -17,7 +17,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     r2handler.cpp \
     highlighters/disassemblyhighlighter.cpp \
-    disassemblycore.cpp \
     files.cpp \
     resultsdialog.cpp \
     r2pipe/r2pipe-api.cxx \
@@ -26,12 +25,12 @@ SOURCES += main.cpp\
     widgets/fileinfotablewidget.cpp \
     widgets/relocationstable.cpp \
     widgets/importstablewidget.cpp \
-    highlighters/pseudocodehighlighter.cpp
+    highlighters/pseudocodehighlighter.cpp \
+    ronincore.cpp
 
 HEADERS  += mainwindow.h \
     r2handler.h \
     highlighters/disassemblyhighlighter.h \
-    disassemblycore.h \
     files.h \
     resultsdialog.h \
     r2pipe/r2pipe.h \
@@ -39,7 +38,8 @@ HEADERS  += mainwindow.h \
     widgets/fileinfotablewidget.h \
     widgets/relocationstable.h \
     widgets/importstablewidget.h \
-    highlighters/pseudocodehighlighter.h
+    highlighters/pseudocodehighlighter.h \
+    ronincore.h
 
 FORMS    += mainwindow.ui \
     resultsdialog.ui
