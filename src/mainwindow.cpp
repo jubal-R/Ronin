@@ -53,7 +53,6 @@ MainWindow::MainWindow(QWidget *parent) :
     sansBold.setBold(true);
 
     ui->functionLabel->setFont(sansBold);
-    ui->functionAddressLabel->setFont(sansBold);
     ui->stringsAddressLabel->setFont(sansBold);
     ui->stringsLabel->setFont(sansBold);
 
@@ -66,7 +65,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pseudoCodeBrowser->setFont(mono);
     ui->graphBrowser->setFont(mono);
     ui->hexBrowser->setFont(mono);
-    ui->functionAddressValueLabel->setFont(mono);
 
     int monoBoldId = QFontDatabase::addApplicationFont(":/fonts/Anonymous Pro B.ttf");
     QString monoBoldFamily = QFontDatabase::applicationFontFamilies(monoBoldId).at(0);
@@ -202,14 +200,27 @@ void MainWindow::on_actionOpen_triggered()
 
 }
 
+void MainWindow::updateDisassemblyViews(){
+    setUpdatesEnabled(false);
+    ui->functionLabel->clear();
+    ui->codeBrowser->setPlainText(roninCore.getDisassembly());
+    ui->pseudoCodeBrowser->setPlainText(roninCore.getPseudoCode());
+    ui->graphBrowser->setPlainText(roninCore.getFunctionGraph());
+    ui->hexBrowser->setPlainText(roninCore.getHexDump());
+    setUpdatesEnabled(true);
+}
+
 void MainWindow::displayFunctionData(QString functionName){
     if (roninCore.fileIsLoaded()){
+        roninCore.seekTo(functionName);
+        updateSeekAddressLabel();
+
         setUpdatesEnabled(false);
         ui->functionLabel->setText(functionName);
-        ui->functionAddressValueLabel->setText(roninCore.getFunctionAddress(functionName));
         ui->codeBrowser->setPlainText(roninCore.getFunctionDisassembly(functionName));
         ui->pseudoCodeBrowser->setPlainText(roninCore.getPseudoCode(functionName));
         ui->graphBrowser->setPlainText(roninCore.getFunctionGraph(functionName));
+        ui->hexBrowser->setPlainText(roninCore.getFunctionHexDump(functionName));
         setUpdatesEnabled(true);
 
     }
@@ -252,11 +263,15 @@ void MainWindow::setStatusBarLabelValues(){
     }
 }
 
+void MainWindow::updateSeekAddressLabel(){
+    QString seekAddress = roninCore.getCurrentSeekAddress();
+    ui->seekAddressLabel->setText(seekAddress);
+}
+
 void MainWindow::clearUi(){
     while (ui->functionList->count() > 0){
         ui->functionList->takeItem(0);
     }
-    ui->functionAddressValueLabel->clear();
     ui->functionLabel->clear();
     ui->codeBrowser->clear();
     ui->pseudoCodeBrowser->clear();
@@ -277,10 +292,23 @@ void MainWindow::enableMenuItems(){
  *  Navigation
 */
 
+void MainWindow::on_actionSeek_triggered()
+{
+    bool ok;
+    QString seekLocation = QInputDialog::getText(this, tr("Seek"),tr("Seek to location"), QLineEdit::Normal,"", &ok).trimmed();
+
+    if (ok && !seekLocation.isEmpty()){
+        roninCore.seekTo(seekLocation);
+        updateSeekAddressLabel();
+        updateDisassemblyViews();
+    }
+}
+
 // Display function when double clicked in sidebar
 void MainWindow::on_functionList_itemDoubleClicked(QListWidgetItem *item)
 {
-    displayFunctionData(item->text());
+    QString functionName = item->text();
+    displayFunctionData(functionName);
 }
 
 // Prompt for address or function and return its offset(physical address)

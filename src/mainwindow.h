@@ -31,6 +31,7 @@ public:
 private slots:
     void highlightCurrentLine();
     void loadBinary(QString file);
+    void updateDisassemblyViews();
     void displayFunctionData(QString functionName);
     void populateFunctionsList();
     void displayHexData();
@@ -39,6 +40,7 @@ private slots:
     void displayResults(QVector< QVector<QString> > results, QString resultsLabel);
     void setStatusBarLabelValues();
     void find(QString searchTerm, QPlainTextEdit *targetWidget, bool searchBackwords);
+    void updateSeekAddressLabel();
 
     void setCentralWidgetStyle(QString foregroundColor, QString backgroundColor);
     void setMainStyle(QString backgroundColor2, QString backgroundColor3);
@@ -83,6 +85,8 @@ private slots:
     void on_actionDark_triggered();
 
     void on_stringsSearchBar_returnPressed();
+
+    void on_actionSeek_triggered();
 
 private:
     Ui::MainWindow *ui;

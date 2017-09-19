@@ -12,6 +12,9 @@ public:
     void loadFile(QString file);
     bool fileIsLoaded();
     void loadFunctionData();
+    void seekTo(QString location);
+
+    QString getCurrentSeekAddress();
 
     QVector<QStringList> getFileInfo();
     QVector<QStringList> getRelocations();
@@ -22,9 +25,13 @@ public:
     QStringList getFunctionNames();
     bool functionExists(QString function);
     QString getFunctionAddress(QString name);
+    QString getDisassembly();
     QString getFunctionDisassembly(QString name);
+    QString getPseudoCode();
     QString getPseudoCode(QString name);
+    QString getFunctionGraph();
     QString getFunctionGraph(QString name);
+    QString getFunctionHexDump(QString name);
 
     QString getHexDump();
     QString getPaddr(QString vaddr);

@@ -18,6 +18,14 @@ bool RoninCore::fileIsLoaded(){
         return false;
 }
 
+void RoninCore::seekTo(QString location){
+    r2h.s(location);
+}
+
+QString RoninCore::getCurrentSeekAddress(){
+    return r2h.currentSeek();
+}
+
 QVector<QStringList> RoninCore::getFileInfo(){
     return r2h.iI();
 }
@@ -94,12 +102,35 @@ QString RoninCore::getFunctionAddress(QString name){
     return "";
 }
 
+QString RoninCore::getDisassembly(){
+    return r2h.pd(200);
+}
+
 QString RoninCore::getFunctionDisassembly(QString name){
     return r2h.pdf(name);
 }
 
+QString RoninCore::getPseudoCode(){
+    return r2h.pdc();
+}
+
 QString RoninCore::getPseudoCode(QString name){
     return r2h.pdc(name);
+}
+
+QString RoninCore::getFunctionGraph(){
+    QString asciiGraph = r2h.agf();
+
+    // Remove unnecessary first line
+    int len = asciiGraph.length();
+    int index = 0;
+    while (index < len && asciiGraph.at(index) != QChar('\n')){
+        index++;
+    }
+
+    asciiGraph = asciiGraph.mid(index);
+
+    return asciiGraph;
 }
 
 QString RoninCore::getFunctionGraph(QString name){
@@ -118,7 +149,11 @@ QString RoninCore::getFunctionGraph(QString name){
 }
 
 QString RoninCore::getHexDump(){
-    return r2h.px("$s @0");
+    return r2h.px(200);
+}
+
+QString RoninCore::getFunctionHexDump(QString name){
+    return r2h.pxf(name);
 }
 
 QString RoninCore::getPaddr(QString vaddr){

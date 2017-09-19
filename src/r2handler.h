@@ -11,6 +11,8 @@ public:
     void setConfig();
     void aa();
     void aaa();
+    void s(QString location);
+    QString currentSeek();
     QVector<QStringList> iI();
     QVector<QStringList> ir();
     QVector<QStringList> ii();
@@ -18,10 +20,14 @@ public:
     QVector< QVector<QString> > S();
     QVector< QVector<QString> > iz();
     QVector< QVector<QString> > afl();
+    QString pd(int numInstructions);
     QString pdf(QString functionName);
+    QString pdc();
     QString pdc(QString functionName);
+    QString agf();
     QString agf(QString functionName);
-    QString px(QString args);
+    QString px(int numInstructions);
+    QString pxf(QString functionName);
     QString paddr(QString vaddr);
 private:
     R2PipeAPI *r2;

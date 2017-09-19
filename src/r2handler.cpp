@@ -20,7 +20,6 @@ void R2Handler::setConfig(){
     r2->cmd("e scr.utf8=1");
     r2->cmd("e asm.flags=0");
     r2->cmd("e asm.fcnlines=0");
-    r2->cmd("e asm.functions=0");
     r2->cmd("e asm.section=0");
     r2->cmd("e hex.header=0");
     r2->cmd("e asm.xrefs=0");
@@ -35,6 +34,17 @@ void R2Handler::aa(){
 // Analyze some more
 void R2Handler::aaa(){
     r2->cmd("aaa");
+}
+
+// Seek
+void R2Handler::s(QString location){
+    location = sanitizeInput(location);
+    r2->cmd("s " + location);
+}
+
+QString R2Handler::currentSeek(){
+    QString currentSeek = r2->cmd("s");
+    return currentSeek;
 }
 
 // Binary info
@@ -229,27 +239,51 @@ QVector< QVector<QString> > R2Handler::afl(){
     return functionsData;
 }
 
-// Function disassembly
+// Disassembly at current seek position
+QString R2Handler::pd(int numInstructions){
+    QString functionDisassembly = r2->cmd("pd " + QString::number(numInstructions));
+    return functionDisassembly;
+}
+
+// Function disassembly of specific function
 QString R2Handler::pdf(QString functionName){
     QString functionDisassembly = r2->cmd("pdf @ " + functionName);
     return functionDisassembly;
 }
 
-// Function pseudo code
+// Function pseudo code at current seek position
+QString R2Handler::pdc(){
+    QString pseudoCode = r2->cmd("pdc");
+    return pseudoCode;
+}
+
+// Function pseudo code of specific function
 QString R2Handler::pdc(QString functionName){
     QString pseudoCode = r2->cmd("pdc @ " + functionName);
     return pseudoCode;
 }
 
-// Ascii graph of function
+// Ascii graph of function at current seek position
+QString R2Handler::agf(){
+    QString asciiGraph = r2->cmd("agf");
+    return asciiGraph;
+}
+
+// Ascii graph of function of specific function
 QString R2Handler::agf(QString functionName){
     QString asciiGraph = r2->cmd("agf @" + functionName);
     return asciiGraph;
 }
 
 // Hexdump
-QString R2Handler::px(QString args){
-    QString hexdump = r2->cmd("px " + args);
+QString R2Handler::px(int numInstructions){
+    QString hexdump = r2->cmd("px " + QString::number(numInstructions));
+    return hexdump;
+}
+
+// Hexdump of function
+QString R2Handler::pxf(QString functionName){
+    QString hexdump = r2->cmd("pxf @ " + functionName);
     return hexdump;
 }
 
@@ -270,6 +304,7 @@ QString R2Handler::sanitizeInput(QString input){
     input = input.replace("|", "");
     input = input.replace(";", "");
     input = input.replace("@", "");
+    input = input.replace(" ", "");
     return input;
 }
 
