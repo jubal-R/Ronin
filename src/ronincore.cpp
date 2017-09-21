@@ -19,7 +19,7 @@ bool RoninCore::fileIsLoaded(){
 }
 
 void RoninCore::seekTo(QString location){
-    r2h.s(location);
+    r2h.seek(location);
 }
 
 QString RoninCore::getCurrentSeekAddress(){
@@ -27,23 +27,23 @@ QString RoninCore::getCurrentSeekAddress(){
 }
 
 QVector<QStringList> RoninCore::getFileInfo(){
-    return r2h.iI();
+    return r2h.binaryInfo();
 }
 
 QVector<QStringList> RoninCore::getRelocations(){
-    return r2h.ir();
+    return r2h.relocations();
 }
 
 QVector<QStringList> RoninCore::getSymbols(){
-    return r2h.is();
+    return r2h.symbols();
 }
 
 QVector<QStringList> RoninCore::getImports(){
-    return r2h.ii();
+    return r2h.imports();
 }
 
 QStringList RoninCore::getStrings(){
-    QVector< QVector<QString> > stringsData = r2h.iz();
+    QVector< QVector<QString> > stringsData = r2h.strings();
     int numStrings = stringsData.length();
 
     QString stringVals = "";
@@ -66,7 +66,7 @@ void RoninCore::loadFunctionData(){
      * Each element contains vector of data for each function in following format:
      * [Function name], [size], [virtual address]
     */
-    functionsData = r2h.afl();
+    functionsData = r2h.functionList();
 }
 
 QStringList RoninCore::getFunctionNames(){
@@ -103,23 +103,23 @@ QString RoninCore::getFunctionAddress(QString name){
 }
 
 QString RoninCore::getDisassembly(){
-    return r2h.pd(200);
+    return r2h.disassembly(200);
 }
 
 QString RoninCore::getFunctionDisassembly(QString name){
-    return r2h.pdf(name);
+    return r2h.functionDisassembly(name);
 }
 
 QString RoninCore::getPseudoCode(){
-    return r2h.pdc();
+    return r2h.pseudoCode();
 }
 
 QString RoninCore::getPseudoCode(QString name){
-    return r2h.pdc(name);
+    return r2h.pseudoCode(name);
 }
 
 QString RoninCore::getFunctionGraph(){
-    QString asciiGraph = r2h.agf();
+    QString asciiGraph = r2h.functionAsciiGraph();
 
     // Remove unnecessary first line
     int len = asciiGraph.length();
@@ -134,7 +134,7 @@ QString RoninCore::getFunctionGraph(){
 }
 
 QString RoninCore::getFunctionGraph(QString name){
-    QString asciiGraph = r2h.agf(name);
+    QString asciiGraph = r2h.functionAsciiGraph(name);
 
     // Remove unnecessary first line
     int len = asciiGraph.length();
@@ -149,11 +149,11 @@ QString RoninCore::getFunctionGraph(QString name){
 }
 
 QString RoninCore::getHexDump(){
-    return r2h.px(200);
+    return r2h.hexdump(200);
 }
 
 QString RoninCore::getFunctionHexDump(QString name){
-    return r2h.pxf(name);
+    return r2h.functionHexdump(name);
 }
 
 QString RoninCore::getPaddr(QString vaddr){

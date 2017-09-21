@@ -12,7 +12,7 @@ void R2Handler::startR2(QString file){
         r2->close();
     r2 = new R2PipeAPI(file + " -B " + baseAddress);
     setConfig();
-    aa();
+    analyzeAll();
 }
 
 void R2Handler::setConfig(){
@@ -27,17 +27,17 @@ void R2Handler::setConfig(){
 }
 
 // Analyze
-void R2Handler::aa(){
+void R2Handler::analyzeAll(){
     r2->cmd("aa");
 }
 
 // Analyze some more
-void R2Handler::aaa(){
+void R2Handler::analyzeAllAutoname(){
     r2->cmd("aaa");
 }
 
 // Seek
-void R2Handler::s(QString location){
+void R2Handler::seek(QString location){
     location = sanitizeInput(location);
     r2->cmd("s " + location);
 }
@@ -48,7 +48,7 @@ QString R2Handler::currentSeek(){
 }
 
 // Binary info
-QVector<QStringList> R2Handler::iI(){
+QVector<QStringList> R2Handler::binaryInfo(){
     QVector<QStringList> fileData;
     QString jsonStr = r2->cmd("iIj");
     QJsonDocument doc = QJsonDocument::fromJson(jsonStr.toLocal8Bit());
@@ -77,7 +77,7 @@ QVector<QStringList> R2Handler::iI(){
 }
 
 // Relocations
-QVector<QStringList> R2Handler::ir(){
+QVector<QStringList> R2Handler::relocations(){
     QVector<QStringList> relocationData;
     QString jsonStr = r2->cmd("irj");
     QJsonArray jsonArray = strToJsonArray(jsonStr);
@@ -105,7 +105,7 @@ QVector<QStringList> R2Handler::ir(){
 }
 
 // Imports
-QVector<QStringList> R2Handler::ii(){
+QVector<QStringList> R2Handler::imports(){
     QVector<QStringList> importsData;
     QString jsonStr = r2->cmd("iij");
 
@@ -135,7 +135,7 @@ QVector<QStringList> R2Handler::ii(){
 }
 
 // Symbols
-QVector<QStringList> R2Handler::is(){
+QVector<QStringList> R2Handler::symbols(){
     QVector<QStringList> symbolsData;
     QString jsonStr = r2->cmd("isj");
     QJsonArray jsonArray = strToJsonArray(jsonStr);
@@ -164,7 +164,7 @@ QVector<QStringList> R2Handler::is(){
 }
 
 // Sections
-QVector< QVector<QString> > R2Handler::S(){
+QVector< QVector<QString> > R2Handler::sections(){
     QVector< QVector<QString> > sectionsData;
     QString jsonStr = r2->cmd("Sj");
     QJsonArray jsonArray = strToJsonArray(jsonStr);
@@ -191,7 +191,7 @@ QVector< QVector<QString> > R2Handler::S(){
 }
 
 // Strings
-QVector< QVector<QString> > R2Handler::iz(){
+QVector< QVector<QString> > R2Handler::strings(){
     QVector< QVector<QString> > stringsData;
     QString jsonStr = r2->cmd("izj");
     QJsonArray jsonArray = strToJsonArray(jsonStr);
@@ -215,7 +215,7 @@ QVector< QVector<QString> > R2Handler::iz(){
 }
 
 // Function List
-QVector< QVector<QString> > R2Handler::afl(){
+QVector< QVector<QString> > R2Handler::functionList(){
     QVector< QVector<QString> > functionsData;
     QString jsonStr = r2->cmd("aflj");
     QJsonArray jsonArray = strToJsonArray(jsonStr);
@@ -240,49 +240,49 @@ QVector< QVector<QString> > R2Handler::afl(){
 }
 
 // Disassembly at current seek position
-QString R2Handler::pd(int numInstructions){
+QString R2Handler::disassembly(int numInstructions){
     QString functionDisassembly = r2->cmd("pd " + QString::number(numInstructions));
     return functionDisassembly;
 }
 
 // Function disassembly of specific function
-QString R2Handler::pdf(QString functionName){
+QString R2Handler::functionDisassembly(QString functionName){
     QString functionDisassembly = r2->cmd("pdf @ " + functionName);
     return functionDisassembly;
 }
 
 // Function pseudo code at current seek position
-QString R2Handler::pdc(){
+QString R2Handler::pseudoCode(){
     QString pseudoCode = r2->cmd("pdc");
     return pseudoCode;
 }
 
 // Function pseudo code of specific function
-QString R2Handler::pdc(QString functionName){
+QString R2Handler::pseudoCode(QString functionName){
     QString pseudoCode = r2->cmd("pdc @ " + functionName);
     return pseudoCode;
 }
 
 // Ascii graph of function at current seek position
-QString R2Handler::agf(){
+QString R2Handler::functionAsciiGraph(){
     QString asciiGraph = r2->cmd("agf");
     return asciiGraph;
 }
 
 // Ascii graph of function of specific function
-QString R2Handler::agf(QString functionName){
+QString R2Handler::functionAsciiGraph(QString functionName){
     QString asciiGraph = r2->cmd("agf @" + functionName);
     return asciiGraph;
 }
 
 // Hexdump
-QString R2Handler::px(int numInstructions){
+QString R2Handler::hexdump(int numInstructions){
     QString hexdump = r2->cmd("px " + QString::number(numInstructions));
     return hexdump;
 }
 
 // Hexdump of function
-QString R2Handler::pxf(QString functionName){
+QString R2Handler::functionHexdump(QString functionName){
     QString hexdump = r2->cmd("pxf @ " + functionName);
     return hexdump;
 }
