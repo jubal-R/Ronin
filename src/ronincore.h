@@ -13,6 +13,8 @@ public:
     bool fileIsLoaded();
     void loadFunctionData();
     void seekTo(QString location);
+    void undoSeek();
+    void redoSeek();
 
     QString getCurrentSeekAddress();
 

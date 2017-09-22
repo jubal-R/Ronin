@@ -331,21 +331,21 @@ void MainWindow::on_actionGet_Offset_triggered()
     }
 }
 
-
-/*
- *  History
-*/
-
 // Back button
 void MainWindow::on_backButton_clicked()
 {
+    roninCore.undoSeek();
+    updateSeekAddressLabel();
+    updateDisassemblyViews();
 
 }
 
 // Forward button
 void MainWindow::on_forwardButton_clicked()
 {
-
+    roninCore.redoSeek();
+    updateSeekAddressLabel();
+    updateDisassemblyViews();
 }
 
 void MainWindow::on_actionBack_triggered()

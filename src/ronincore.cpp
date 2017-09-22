@@ -22,6 +22,14 @@ void RoninCore::seekTo(QString location){
     r2h.seek(location);
 }
 
+void RoninCore::undoSeek(){
+    r2h.undoSeek();
+}
+
+void RoninCore::redoSeek(){
+    r2h.redoSeek();
+}
+
 QString RoninCore::getCurrentSeekAddress(){
     return r2h.currentSeek();
 }

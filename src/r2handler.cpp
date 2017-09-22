@@ -42,6 +42,14 @@ void R2Handler::seek(QString location){
     r2->cmd("s " + location);
 }
 
+void R2Handler::undoSeek(){
+    r2->cmd("s-");
+}
+
+void R2Handler::redoSeek(){
+    r2->cmd("s+");
+}
+
 QString R2Handler::currentSeek(){
     QString currentSeek = r2->cmd("s");
     return currentSeek;

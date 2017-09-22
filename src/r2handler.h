@@ -12,6 +12,8 @@ public:
     void analyzeAll();
     void analyzeAllAutoname();
     void seek(QString location);
+    void undoSeek();
+    void redoSeek();
     QString currentSeek();
     QVector<QStringList> binaryInfo();
     QVector<QStringList> relocations();
